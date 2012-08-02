@@ -1,0 +1,29 @@
+
+{{=LOAD('widget','hora.load',ajax=False,_class="") }}
+<small>...y automáticamente cada 5 minutos</small>
+<div id="filtro"><strong>Filtrar</strong>
+  <input name="filtrando" id="filtrando" /><span id="filtrado" class="badge">0</span>
+</div>
+<hr />
+{{=feeds}}
+
+    <script type="text/javascript">
+    function filtro(){
+	jQuery("#filtrando").keyup(function () {
+	    var filter = jQuery(this).val(), count = 0;
+	    
+	    jQuery(".thumbnails li").each(function () {
+		if (jQuery(this).text().search(
+		    new RegExp(filter, "i")) < 0) {
+		    jQuery(this).addClass("hidden");
+		} else {
+		    jQuery(this).removeClass("hidden");
+		    count++;
+		}
+	    });
+	    jQuery("#filtrado").text(count);
+	});
+    }
+
+jQuery(document).ready(filtro);
+</script>

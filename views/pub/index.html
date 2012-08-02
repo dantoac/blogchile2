@@ -1,0 +1,33 @@
+{{left_sidebar_enabled = False}}
+{{right_sidebar_enabled = False}}
+
+{{extend 'plantilla.html'}}
+
+{{### Css de tiempo es display:none; el siguiente js muestra y anima el widget tiempo sólo luego que ya esté cargado; esto es necesario cuando ajax=False}}
+{{=SCRIPT('jQuery(document).ready(function(){jQuery("#tiempo").css("display","inline-block"),jQuery("#tiempo").cycle({fx:"turnDown"});})')}}
+
+<script type="text/javascript">
+
+function actualiza_feeds() {
+   web2py_component('{{=URL(c='default',f='publicaciones.load', args=request.args)}}','blogs');
+setTimeout(actualiza_feeds,300000);
+}
+jQuery(document).ready(actualiza_feeds);
+</script>
+
+<div style="clear: both;"></div>
+{{#=LOAD(c='widget',f='pronosticotiempo.load', ajax=False,target='tiempo', content=SPAN('Cargando pronóstico del tiempo...'))}}
+
+<div style="height:60px;line-height:60px;display:none;"></div>
+
+{{try:}}
+{{#=LOAD(c='widget',f='indicadoreseconomicos.load', ajax=True, target='indicadoreseconomicos',content=SPAN('Cargando índices económicos...',_class='info msg'),_class='der')}}
+{{except:pass}}
+
+<div id="box">
+
+{{=DIV(B('Filtrar:'),INPUT(_name='filtrando',_id='filtrando'),SPAN('Ø',_id='filtrado')," posts",_id='filtro', _class='ui-widget')}}
+{{#=LOAD(c='default',f='publicaciones.load',args=request.args, ajax=True, content='Cargando publicaciones...', target='blogs')}}
+{{=publicaciones}}
+
+</div>

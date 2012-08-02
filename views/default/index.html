@@ -1,0 +1,27 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,False}}
+
+
+{{block right_sidebar}}
+{{=LOAD(c="widget", f="pronosticotiempo.load", ajax = False, 
+				content = SPAN("Cargando el pronóstico del Tiempo...",
+				_class = "label"), target = "")}}  
+{{end}}
+
+
+{{extend 'plantilla.html'}}
+<script type="text/javascript">
+
+function actualiza_feeds() {
+   web2py_component('{{=URL(c='pub',f='index.load', args=request.args)}}','blogs');
+setTimeout(actualiza_feeds,300000);
+}
+
+jQuery(document).ready(actualiza_feeds);
+
+</script>
+
+
+<div id="blogs">
+  <span class="label">Recolectando publicaciones. Por favor espere...</span>
+</div>
+
