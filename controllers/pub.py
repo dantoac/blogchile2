@@ -20,7 +20,7 @@ def index():
         db.feed.link
         )
 
-    pub.append(cache.ram(str(categoria), 
+    pub.append(cache.disk(str(categoria), 
                          lambda: get_feeds(data),
                          time_expire = 300))
 
