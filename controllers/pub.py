@@ -6,10 +6,10 @@ def index():
 
     pub = UL(_class = 'thumbnails')
     
-    if len(request.args(0)) == 0:
+    if len(request.args) == 0:
         categoria = 'noticias'
     else:
-        cateogoria = request.args(0)
+        categoria = request.args(0)
 
     cat_id = db(db.categoria.slug == categoria).select(db.categoria.id)[0]
 
