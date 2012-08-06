@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
-#T.force('es-es')
-#import locale
-#locale.setlocale(locale.LC_ALL, 'es_CL.UTF8')
-
 def index():
     M = DBModel()
     M.feeds()
 
     pub = UL(_class = 'thumbnails')
     
-    if request.args:
-        cat_id = db(db.categoria.slug == request.args(0)).select(db.categoria.id)[0] or 1
+    if len(request.args(0)) == 0:
+        categoria = 'noticias'
     else:
-        cat_id = 1
+        cateogoria = request.args(0)
+
+    cat_id = db(db.categoria.slug == categoria).select(db.categoria.id)[0]
 
     data = db((db.feed.categoria == cat_id) &
               (db.feed.is_active == True)
@@ -22,21 +20,18 @@ def index():
         db.feed.link
         )
 
-
-    pub.append(cache.disk(str(request.args(0)), 
+    pub.append(cache.ram(str(categoria), 
                          lambda: get_feeds(data),
-                         time_expire = 300)
-               )
+                         time_expire = 300))
 
     return dict(feeds=pub)
 
 def get_feeds(data):
-    #session.forget()
+    session.forget()
     import gluon.contrib.feedparser as feedparser
     pub = CAT()
     for f in data:
         try:
-            #d = cache.ram(str('asdf'), lambda: feedparser.parse(f.link), time_expire=60)
             d = feedparser.parse(f.link)
             entradas = [
                 DIV(A(entry.title[:50]+'...', _href=entry.link, 
@@ -61,6 +56,7 @@ def guess_updated(date):
 	Traduce parámetro fecha a formato ISO estándar o 
 	retorna la fecha original si no pudiere.
     """
+    session.forget()
     from datetime import datetime
     
     try:
